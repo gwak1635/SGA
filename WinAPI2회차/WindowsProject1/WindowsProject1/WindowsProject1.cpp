@@ -8,7 +8,7 @@
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
-WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
+WCHAR szTitle[MAX_LOADSTRING]=PROGRAM_TITLE;                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
@@ -17,10 +17,11 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+//WinAPI의 메인함수!
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance,         //핸들 인스턴스
+                     _In_opt_ HINSTANCE hPrevInstance,//이전에 실행된 핸들 인스턴스(사용 안 함)
+                     _In_ LPWSTR    lpCmdLine,//명령행으로 입력된 프로그램 인수
+                     _In_ int       nCmdShow)//프로그램이 시작될 때의 형태(최소화, 보통 등의 상태값) 
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -28,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // TODO: 여기에 코드를 입력합니다.
 
     // 전역 문자열을 초기화합니다.
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+    //LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_WINDOWSPROJECT1, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
@@ -97,8 +98,27 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+   //화면 해상도 얻기
+   int nResolutionX = GetSystemMetrics(SM_CXSCREEN);
+   int nResolutionY = GetSystemMetrics(SM_CYSCREEN);
+
+   //창 화면 중앙 위치 계산
+   int nWinPosX = nResolutionX / 2 - WINSIZEX / 2;
+   int nWinPosY = (nResolutionY-WINSIZEY)/2
+
+   HWND hWnd = CreateWindowW(
+       szWindowClass,           //윈도우 클래스 이름
+       szTitle,                 //타이틀바에 띄울 이름
+       WS_OVERLAPPEDWINDOW,     //윈도우 스타일(최소화, 보통 등)
+       CW_USEDEFAULT,           //화면 좌표 x
+       0,                       //화면 좌표 y
+       WINSIZEX,                //가로 사이즈
+       WINSIZEY,                //세로 사이즈
+       nullptr,                 //부모 윈도우
+       nullptr,                 //메뉴 핸들
+       hInstance,               //인스턴스 지정
+       nullptr                  //자식 윈도우를 생성하면 지정 그렇지 않으면 NULL
+   );
 
    if (!hWnd)
    {

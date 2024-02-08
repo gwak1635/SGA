@@ -15,4 +15,9 @@
 #include <tchar.h>
 
 //전역 디파인
+#define WINSIZEX 1280
+#define WINSIZEY 720
+
+#define PROGRAM_TITLE L"게임을 만들어 보자!!"
+
 

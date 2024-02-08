@@ -17,20 +17,31 @@ clear(): 벡터 전체를 지운다.
 empty() : 벡터가 비어있는지 확인
 */
 
+struct Car {
+	struct engine {
+		int test;
+	};
+};
+
 int main() {
+	Car::engine a;
+	a.test = 100;
 	//벡터: 자료를 담는 자료구조
 	//vector<담을 자료형> 변수이름;으로 선언을 한다.
 	vector<int> vecInt;
 
 	vecInt.push_back(3);
 	vecInt.push_back(2);
-	vecInt.push_back(4);
 	vecInt.push_back(7);
+	vecInt.push_back(6);
 
-	// 3 2 4 7
+	vecInt.insert(vecInt.end()-2, 5);
 	
+	//cout << vecInt[-1] << endl;
+	//파이썬 리스트처럼은 안된다!
+	// 
 	// 벡터 이터레이터: 벡터의 주소값을 임시로 담을 변수
-	vector<int>::iterator iter;
+	vector<int>::iterator iter;//이중 클래스 같은 건가?
 
 	for (iter = vecInt.begin(); iter!=vecInt.end(); iter++)
 	{
@@ -39,3 +50,4 @@ int main() {
 
 	return 0;
 }
+
