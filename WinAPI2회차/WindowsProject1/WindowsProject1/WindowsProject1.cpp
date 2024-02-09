@@ -7,9 +7,27 @@
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
-HINSTANCE hInst;                                // 현재 인스턴스입니다.
-WCHAR szTitle[MAX_LOADSTRING]=PROGRAM_TITLE;                  // 제목 표시줄 텍스트입니다.
-WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+HINSTANCE   hInst;                                      // 현재 인스턴스입니다.
+HWND        g_hWnd;                                      // 윈도우 핸들
+WCHAR       szTitle[MAX_LOADSTRING]=PROGRAM_TITLE;      // 제목 표시줄 텍스트입니다.
+WCHAR       szWindowClass[MAX_LOADSTRING];              // 기본 창 클래스 이름입니다.
+
+enum MOVE_DIR {MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN};
+//렉트 생성 매크로(x,y, 사이즈)
+#define RECT_MAKE(x,y,s) {x-s/2,y-s/2,x+s/2,y+s/2}//매크로는 세미콜론 안붙임
+//렉트 렌더 매크로
+#define RECT_DRAW(rt) Rectangle(hdc,rt.left,rt.top,rt.right,rt.bottom)
+
+POINT       ptPos1 = { 100,100 }; //조작할 렉트의 좌표값
+RECT        rtBox1;
+MOVE_DIR    eMoveDir;
+float       fMoveSpeed = 20;
+
+POINT       ptPos2 = { WINSIZEX / 2.0f,WINSIZEY / 2.0f };//충돌 대상 렉트의 좌표값
+RECT        rtBox2;
+
+POINT       ptMouse;
+bool        isPicked = false;
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -79,8 +97,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINDOWSPROJECT1));//아이콘
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);                           //커서
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);                                 //백그라운드(브러시 색상 등)
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WINDOWSPROJECT1);                    //메뉴 이름
-    wcex.lpszClassName  = szWindowClass;                                            //클래스 이름
+    wcex.lpszMenuName   = NULL;                                        //메뉴 이름
+    wcex.lpszClassName  = szWindowClass;                                             //클래스 이름
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));     //작은 아이콘
 
     return RegisterClassExW(&wcex);
@@ -127,9 +145,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       return FALSE;
    }
 
-   //윈도우 사이즈 조정(타이틀 바 및 메뉴 사이즈 실 사이즈에서 제외)
-   RECT rt = 
+   g_hWnd = hWnd;
 
+   //윈도우 사이즈 조정(타이틀 바 및 메뉴 사이즈 실 사이즈에서 제외)
+   RECT rt = { nWinPosX,nWinPosY,nWinPosX + WINSIZEX,nWinPosY + WINSIZEY };
+   AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, false);
+   MoveWindow(hWnd, nWinPosX, 100, rt.right - rt.left, rt.bottom-rt.top, TRUE);
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -167,28 +188,85 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            //Device Context: 출력을 위한 모든 데이터를 가지는 구조체
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            
-            for (int i = 0; i <= 16; i++)
-            {
-                MoveToEx(hdc, i * (WINSIZEX / 16), 0, NULL);
-                LineTo(hdc, i * (WINSIZEX / 16), WINSIZEY);
-            }
-
-            for (int i = 0; i <= 9; i++)
-            {
-                MoveToEx(hdc, 0, i*(WINSIZEY / 9), NULL);
-                LineTo(hdc, WINSIZEX , i * (WINSIZEY / 9));
-            }
-
-            EndPaint(hWnd, &ps);
+    case WM_CREATE:// 프로그램이 실행될 때 한번 호출된다.
+        SetTimer(hWnd, 1, 10, NULL);//핸들, 타이머 이름, 간격(1초에 n번)
+        break;
+    case WM_TIMER: //타이머에 의해서 호출
+        InvalidateRect(hWnd, NULL, true);//전체영역 다시그림
+        
+        rtBox1 = RECT_MAKE(ptPos1.x, ptPos1.y, 100);
+        rtBox2 = RECT_MAKE(ptPos2.x, ptPos2.y, 100);
+        
+        if (isPicked) {
+            ptPos2 = ptMouse;
         }
         break;
+    case WM_KEYDOWN://키 입력이 있을 때마다 호출된다.
+        switch (wParam) {
+        case 'A': case VK_LEFT:
+            ptPos1.x -= (rtBox1.left >= fMoveSpeed)? fMoveSpeed : 0;
+            eMoveDir = MOVE_LEFT;
+            break;
+        case 'D': case VK_RIGHT:
+            ptPos1.x+= (rtBox1.right <= WINSIZEX-fMoveSpeed) ? fMoveSpeed :0;
+            eMoveDir = MOVE_RIGHT;
+            break;
+        case 'W': case VK_UP:
+            ptPos1.y-= (rtBox1.top >= fMoveSpeed) ? fMoveSpeed : 0;
+            eMoveDir = MOVE_UP;
+            break;
+        case 'S': case VK_DOWN:
+            ptPos1.y+= (rtBox1.bottom <= WINSIZEY - fMoveSpeed) ? fMoveSpeed : 0;
+            eMoveDir = MOVE_DOWN;
+            break;
+        }
+    case WM_MOUSEMOVE:
+        ptMouse.x = LOWORD(lParam);//마우스 포인터 값을 불러오는  파라메터
+        ptMouse.y = HIWORD(lParam);
+        break;
+    case WM_LBUTTONDOWN:
+        if (PtInRect(&rtBox2, ptMouse))
+        {
+            ptPos2 = ptMouse;
+            isPicked = true;
+        }
+        break;
+    case WM_LBUTTONUP:
+        isPicked = false;
+        break;
+    case WM_PAINT:
+        {
+        PAINTSTRUCT ps;
+        //Device Context: 출력을 위한 모든 데이터를 가지는 구조체
+        HDC hdc = BeginPaint(hWnd, &ps);
+        // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+
+        //포지션 위치에 따른 렉트 정보 업데이트
+        RECT_DRAW(rtBox1);
+        RECT_DRAW(rtBox2);
+        
+        RECT rt;
+        if (IntersectRect(&rt, &rtBox1, &rtBox2)) {
+            switch (eMoveDir)
+            {
+            case MOVE_LEFT:
+                ptPos2.x -= fMoveSpeed;
+                break;
+            case MOVE_RIGHT:
+                ptPos2.x += fMoveSpeed;
+                break;
+            case MOVE_UP:
+                ptPos2.y -= fMoveSpeed;
+                break;
+            case MOVE_DOWN:
+                ptPos2.y += fMoveSpeed;
+                break;
+            }
+        }
+
+        EndPaint(hWnd, &ps);
+        break;
+        }
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
