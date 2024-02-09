@@ -20,4 +20,6 @@
 
 #define PROGRAM_TITLE L"게임을 만들어 보자!!"
 
+#include <string>
 
+using namespace std;

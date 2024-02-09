@@ -39,6 +39,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,         //핸들 인스턴스
         return FALSE;
     }
 
+    //단축키 테이블을 읽어들인다
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINDOWSPROJECT1));
 
     MSG msg;
@@ -46,6 +47,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,         //핸들 인스턴스
     // 기본 메시지 루프입니다:
     while (GetMessage(&msg, nullptr, 0, 0))
     {
+        // 키보드 메세지를 WM_COMMAND로 변경해서 단축키가 동작할 수 있도록 해주는 함수
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
@@ -65,21 +67,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,         //핸들 인스턴스
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    WNDCLASSEXW wcex;
+    WNDCLASSEXW wcex;       //WNDCLASS : 윈도우의 정보를 저장하기 위한 구조체
 
-    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.cbSize = sizeof(WNDCLASSEX); //구조체의 크기 정보
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINDOWSPROJECT1));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WINDOWSPROJECT1);
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.style          = CS_HREDRAW | CS_VREDRAW;  //윈도우 스타일
+    wcex.lpfnWndProc    = WndProc;                  //윈도우 프로시저(메시지 처리 함수)
+    wcex.cbClsExtra     = 0;                        //클래스 여분의 메모리
+    wcex.cbWndExtra     = 0;                        //윈도우 여분의 메모리
+    wcex.hInstance      = hInstance;                //핸들 인스턴스
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINDOWSPROJECT1));//아이콘
+    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);                           //커서
+    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);                                 //백그라운드(브러시 색상 등)
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WINDOWSPROJECT1);                    //메뉴 이름
+    wcex.lpszClassName  = szWindowClass;                                            //클래스 이름
+    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));     //작은 아이콘
 
     return RegisterClassExW(&wcex);
 }
@@ -104,14 +106,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    //창 화면 중앙 위치 계산
    int nWinPosX = nResolutionX / 2 - WINSIZEX / 2;
-   int nWinPosY = (nResolutionY-WINSIZEY)/2
+   int nWinPosY = (nResolutionY - WINSIZEY) / 2;
 
    HWND hWnd = CreateWindowW(
        szWindowClass,           //윈도우 클래스 이름
        szTitle,                 //타이틀바에 띄울 이름
        WS_OVERLAPPEDWINDOW,     //윈도우 스타일(최소화, 보통 등)
-       CW_USEDEFAULT,           //화면 좌표 x
-       0,                       //화면 좌표 y
+       nWinPosX,                //화면 좌표 x
+       100,                       //화면 좌표 y
        WINSIZEX,                //가로 사이즈
        WINSIZEY,                //세로 사이즈
        nullptr,                 //부모 윈도우
@@ -124,6 +126,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
+
+   //윈도우 사이즈 조정(타이틀 바 및 메뉴 사이즈 실 사이즈에서 제외)
+   RECT rt = 
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
@@ -165,8 +170,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
+            //Device Context: 출력을 위한 모든 데이터를 가지는 구조체
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+            
+            for (int i = 0; i <= 16; i++)
+            {
+                MoveToEx(hdc, i * (WINSIZEX / 16), 0, NULL);
+                LineTo(hdc, i * (WINSIZEX / 16), WINSIZEY);
+            }
+
+            for (int i = 0; i <= 9; i++)
+            {
+                MoveToEx(hdc, 0, i*(WINSIZEY / 9), NULL);
+                LineTo(hdc, WINSIZEX , i * (WINSIZEY / 9));
+            }
+
             EndPaint(hWnd, &ps);
         }
         break;
