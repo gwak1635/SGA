@@ -24,11 +24,12 @@
 // 렉트 생성 매크로 (x좌표, y좌표, 사이즈)
 #define RECT_MAKE(x, y, s) { x - s / 2, y - s / 2, x + s / 2, y + s / 2 }
 // 렉트 렌더 매크로
-#define RECT_DRAW(rt) Rectangle(hdc, rt.left, rt.top, rt.right, rt.bottom)
+#define RECT_DRAW(rt) Rectangle(g_hDC, rt.left, rt.top, rt.right, rt.bottom)
 
-//전역 변수
+//전역 변수(extern: 외부에서 접근 가능하게 연결하는 것)
 extern HWND		g_hWnd;										// 윈도우 핸들
 extern POINT	g_ptMouse;
+extern HDC		g_hDC;
 
 //문자열 " "
 //문자열 L" " : 한글과 같은 멀티바이트를 사용하여 표현되는 문자를 표시

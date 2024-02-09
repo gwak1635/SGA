@@ -26,21 +26,9 @@ WCHAR		szWindowClass[MAX_LOADSTRING];				// 기본 창 클래스 이름입니다
 
 HWND		    g_hWnd;										// 윈도우 핸들
 POINT			g_ptMouse;
+HDC             g_hDC;
 
-POINT			ptPos1 = { WINSIZEX / 2, WINSIZEY - 30 };							// 조작할 렉트의 좌표 값
-RECT			rtBox1;
-float			fMoveSpeed = 20;
-int             nScore = 0;
-int             nLevel = 1;
-
-struct tagBox
-{
-    RECT    rt;
-    float   speed;
-};
-
-vector<tagBox>	vecBox;                                    //떨어지는 렉트들의 정보
-int				nDelay = 50;
+MainGame*       pMainGame=NULL;
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -74,6 +62,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,			// 프로그램의 핸들 인�
     // 엑셀러레이터(단축키) 테이블을 읽어드린다.
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINDOWSPROJECT1));
 
+    pMainGame = new MainGame;    //할당
+    pMainGame->Init();
+
     MSG msg;
 
     // 기본 메시지 루프입니다:
@@ -86,6 +77,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,			// 프로그램의 핸들 인�
             DispatchMessage(&msg);
         }
     }
+
+    delete pMainGame;       //해제
 
     return (int)msg.wParam;
 }
@@ -208,73 +201,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         srand(time(NULL));
         break;
     case WM_TIMER:		// 타이머에 의해서 호출
-    {
-        InvalidateRect(hWnd, NULL, true);
-
-        nLevel = nScore / 100 + 1;
-
-        // 포지션 위치에 따른 렉트 정보 업데이트
-        rtBox1 = RECT_MAKE(ptPos1.x, ptPos1.y, 50);
-
-        if (nDelay >= 50)
-        {
-            tagBox box;
-
-            box.rt.left = rand() % (WINSIZEX - 15);
-            box.rt.right = box.rt.left + 30;
-            box.rt.top = -30;
-            box.rt.bottom = 0;
-            box.speed = rand() % 11 + 5;
-
-
-            vecBox.push_back(box);
-            nDelay = rand() % 50;
-        }
-        else
-            nDelay+=nLevel;
-
-        vector<tagBox>::iterator iter;
-
-        for (iter = vecBox.begin(); iter != vecBox.end(); iter++)
-        {
-            iter->rt.top += iter->speed;
-            iter->rt.bottom += iter->speed;
-
-            RECT rt;
-            RECT rtIter = iter->rt;
-
-            if (iter->rt.top > WINSIZEY)//변수가 아니라 이터레이터라서 이짓을 해야함
-            {
-                nScore++;
-                vecBox.erase(iter);
-                break;
-            }
-            else if (IntersectRect(&rt, &rtBox1, &rtIter)) {
-                nScore -= 10;
-                vecBox.erase(iter);
-                break;
-            } 
-            else if (PtInRect(&rtIter, g_ptMouse)) {
-                nScore += 5;
-                vecBox.erase(iter);
-                break;
-            }
-
-        }
-    }
-    break;
-    case WM_KEYDOWN:	// 키 입력이 있을 때 마다 호출 된다.
-        switch (wParam)
-        {
-            // 삼항식 (조건) ? 참일 때 : 거짓일 때
-        case 'A': case VK_LEFT:
-            ptPos1.x -= (rtBox1.left >= fMoveSpeed) ? fMoveSpeed : 0;
-            break;
-        case 'D': case VK_RIGHT:
-            ptPos1.x += (rtBox1.right <= WINSIZEX - fMoveSpeed) ? fMoveSpeed : 0;
-            break;
-        }
-        break;
+        if (pMainGame)
+            pMainGame->Update();
+        break;    
     case WM_MOUSEMOVE:
         g_ptMouse.x = LOWORD(lParam);
         g_ptMouse.y = HIWORD(lParam);
@@ -283,31 +212,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_LBUTTONUP:
         break;
     case WM_PAINT:
-    {
-        PAINTSTRUCT ps;
-
-        HDC hdc = BeginPaint(hWnd, &ps);
-
-        RECT_DRAW(rtBox1);
-
-        for (int i = 0; i < vecBox.size(); i++)
-        {
-            RECT_DRAW(vecBox[i].rt);
-        }
-
-        char szBuf[32];
-
-        _itoa_s(nLevel, szBuf, 10);     //정수를 문자열로 바꾸는 함수!
-        string str = string(szBuf);
-        TextOutA(hdc, 10, 10, str.c_str(), str.length());
-
-        _itoa_s(nScore, szBuf, 10);     //정수를 문자열로 바꾸는 함수!
-        str = string(szBuf);
-        TextOutA(hdc, 10, 30, str.c_str(), str.length());
-
-        EndPaint(hWnd, &ps);
-    }
-    break;
+        if (pMainGame)
+            pMainGame->Render();
+        break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
