@@ -3,8 +3,7 @@
 
 void Objects::Init()
 {
-
-	m_vecBox;                                    //떨어지는 렉트들의 정보
+    m_vecBox;                                    //떨어지는 렉트들의 정보
 	m_nDelay = 50;
 }
 

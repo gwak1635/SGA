@@ -12,7 +12,6 @@ class Objects : public GameNode
 private:
 	vector<tagBox>	m_vecBox;   //떨어지는 렉트들의 정보
 	int				m_nDelay;
-
 	int				m_nLevel;
 
 public:

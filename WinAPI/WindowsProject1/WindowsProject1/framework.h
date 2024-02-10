@@ -29,7 +29,7 @@
 //전역 변수(extern: 외부에서 접근 가능하게 연결하는 것)
 extern HWND		g_hWnd;										// 윈도우 핸들
 extern POINT	g_ptMouse;
-extern HDC		g_hDC;
+extern HDC		g_hDC;			//백버퍼 DC
 
 //문자열 " "
 //문자열 L" " : 한글과 같은 멀티바이트를 사용하여 표현되는 문자를 표시
@@ -41,3 +41,4 @@ extern HDC		g_hDC;
 using namespace std;
 
 #include "MainGame.h"
+#include "KeyManager.h"

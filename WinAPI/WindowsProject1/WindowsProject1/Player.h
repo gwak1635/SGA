@@ -11,6 +11,6 @@ public:
 	virtual void Update() override;
 	virtual void Render() override;
 
-	RECT& GetRect() { return m_rtBox1 };
+	RECT& GetRect() { return m_rtBox1; };
 };
 

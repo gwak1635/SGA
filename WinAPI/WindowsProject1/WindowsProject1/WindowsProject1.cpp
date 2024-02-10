@@ -62,23 +62,39 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,			// 프로그램의 핸들 인�
     // 엑셀러레이터(단축키) 테이블을 읽어드린다.
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINDOWSPROJECT1));
 
+    HDC hdc = GetDC(g_hWnd);
+    g_hDC = CreateCompatibleDC(hdc);                                            //화면에 출력되지 않는 비트맵 객체를 연결할 수 있는 DC
+    HBITMAP hBitmap = (HBITMAP)CreateCompatibleBitmap(hdc, WINSIZEX, WINSIZEY); //렌더할 비트맵 생성
+    SelectObject(g_hDC, hBitmap);                                               // 생성한 비트맵을 백버퍼 DC에 연결
+
     pMainGame = new MainGame;    //할당
     pMainGame->Init();
 
     MSG msg;
 
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        // 키보드 메시지를 WM_COMMAND 로 변경해서 엑셀러레이터가 동작 할 수 있도록 해주는 함수
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+
+    //메세지가 없는 시간을 데스 타임이라고 부름(대기하다 CPU 성능 버림)
+    //픽 메시지 루프
+    while (true) {
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
+            if (msg.message == WM_QUIT)
+                break;
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+        else {
+            if (pMainGame) {
+                pMainGame->Update();
+                pMainGame->Render();
+            }
+        }
     }
-
     delete pMainGame;       //해제
+
+    DeleteObject(hBitmap);
+    DeleteDC(g_hDC);
 
     return (int)msg.wParam;
 }
@@ -196,24 +212,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
-    case WM_CREATE:		// 프로그램이 실행 될 때 한번 호출 된다. (초기화)
-        SetTimer(hWnd, 1, 10, NULL);
-        srand(time(NULL));
-        break;
-    case WM_TIMER:		// 타이머에 의해서 호출
-        if (pMainGame)
-            pMainGame->Update();
-        break;    
     case WM_MOUSEMOVE:
         g_ptMouse.x = LOWORD(lParam);
         g_ptMouse.y = HIWORD(lParam);
         break;
-   
     case WM_LBUTTONUP:
-        break;
-    case WM_PAINT:
-        if (pMainGame)
-            pMainGame->Render();
         break;
     case WM_DESTROY:
         PostQuitMessage(0);

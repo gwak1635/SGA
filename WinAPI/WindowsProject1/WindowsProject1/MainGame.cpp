@@ -7,12 +7,16 @@
 
 MainGame::MainGame()
 {
+    srand((unsigned)time(NULL));
     m_pPlayer = new Player;
     m_pObjects = new Objects;
 }
 
 MainGame::~MainGame()
 {
+    delete m_pPlayer;
+    delete m_pObjects;
+    g_pKeyManager->ReleaseInstance();
 }
 
 void MainGame::Init()
@@ -27,7 +31,7 @@ void MainGame::Init()
 
 void MainGame::Update()
 {
-    InvalidateRect(g_hWnd, NULL, true);
+    InvalidateRect(g_hWnd, NULL, false);
        
     m_nLevel = m_nScore / 100 + 1;
     // 레벨 정보를 오브젝트에 넘겨줘야 한다.
@@ -66,10 +70,13 @@ void MainGame::Render()
 {
     PAINTSTRUCT ps;
 
-    HDC g_hDC = BeginPaint(g_hWnd, &ps);
+    HDC hdc = BeginPaint(g_hWnd, &ps);
 
-    if (m_pPlayer)  m_pPlayer->Render();
+    PatBlt(g_hDC, 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
+
+    if (m_pPlayer) m_pPlayer->Render();
     if (m_pObjects) m_pObjects->Render();
+    
 
     char szBuf[32];
 
@@ -80,6 +87,8 @@ void MainGame::Render()
     _itoa_s(m_nScore, szBuf, 10); 
     str = string(szBuf);
     TextOutA(g_hDC, 10, 30, str.c_str(), str.length());
+
+    BitBlt(hdc, 0, 0, WINSIZEX, WINSIZEY, g_hDC, 0, 0, SRCCOPY);
 
     EndPaint(g_hWnd, &ps);
 }
