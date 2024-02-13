@@ -78,3 +78,89 @@ void Remove(Node** head, Node* remove) {
 	remove->Prev = NULL;
 	remove->Next = NULL;
 }
+
+Node* GetNode(Node* head, int location) {
+	Node* current = head;
+
+	while (current !=NULL && (--location)>=0)
+	{
+		current = current->Next;
+	}
+
+	return current;
+}
+
+int GetNodeCount(Node* head) {
+
+	int count = 0;
+	Node* current = head;
+
+	while (current != NULL)
+	{
+		current = current->Next;
+		count++;
+	}
+
+	return count;
+}
+
+int main() {
+	Node* head = NULL;
+	for (int i = 0; i < 5; i++)
+	{
+		Node* node = Create(i);
+		Push(&head, node);
+	}
+
+	Node* newNode = NULL;
+	{
+		newNode = Create(-1);
+		InsertHead(&head, newNode);
+
+		newNode = Create(-2);
+		InsertHead(&head, newNode);
+	}
+
+	int count = GetNodeCount(head);
+
+	for (int i = 0; i < count; i++)
+	{
+		Node* current = GetNode(head, i);
+		printf("list[%d] : %d\n", i, current->Data);
+	}
+		
+	newNode = Create(100);
+	Push(&head, newNode);
+
+	count = GetNodeCount(head);
+	for (int i = 0; i < count; i++)
+	{
+		Node* current = GetNode(head, i);
+		printf("list[%d] : %d\n", i, current->Data);
+	}
+
+	Node* current = GetNode(head, 2);
+	newNode = Create(1000);
+	Insert(current, newNode);
+
+	count = GetNodeCount(head);
+	for (int i = 0; i < count; i++)
+	{
+		Node* current = GetNode(head, i);
+		printf("list[%d] : %d\n", i, current->Data);
+	}
+
+	count = GetNodeCount(head);
+	for (int i = 0; i < count; i++)
+	{
+		Node* current = GetNode(head, 0);
+		if (current != NULL) {
+			Remove(&head, current);
+			Destroy(current);
+		}
+	}
+
+
+
+	return 0;
+}
