@@ -12,6 +12,7 @@ namespace Window
 		UINT message,
 		WPARAM wParam,
 		LPARAM lParam
+		
 	) 
 	{
 		switch (message)
