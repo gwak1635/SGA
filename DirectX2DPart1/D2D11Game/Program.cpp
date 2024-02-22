@@ -9,7 +9,7 @@ int APIENTRY WinMain(
 	int nCmdShow
 )
 {
-	Window::Create(hInstance, 500, 500);
+	Window::Create(hInstance, 500, 500);//TODO 창크기 바꾸기
 	Window::Show();
 	
 	Settings::Get().SetWindowHandle(Window::global_handle);

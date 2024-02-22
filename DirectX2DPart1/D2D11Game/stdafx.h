@@ -1,10 +1,16 @@
 #pragma once
 
+#ifdef _DEBUG
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")//또 다른 콘솔창을 만듦
+#endif // _DEBUG
+
+
 //Window
 #include <Windows.h>
 #include <assert.h>//단언문, 디버그 모드에서만 작동
 
 //STL
+#include <iostream>
 #include <vector>
 
 //DirectX

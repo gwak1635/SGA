@@ -10,6 +10,11 @@ struct PixelInput
     float4 color : COLOR0;
 };
 
+cbuffer TransformBuffer
+{
+    
+};
+
 PixelInput VS(VertexInput input)
 {
     PixelInput output;
@@ -19,3 +24,10 @@ PixelInput VS(VertexInput input)
     
     return output;
 }
+
+//래스터라이저가 지정한 픽셀 개수만큼 호출
+float4 PS(PixelInput input) : SV_Target
+{
+    return input.color;//어디다 그려야 할지 모름
+}
+//hlsl은 진입점 단위 컴파일
