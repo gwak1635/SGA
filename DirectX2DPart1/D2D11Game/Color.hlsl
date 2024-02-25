@@ -10,17 +10,22 @@ struct PixelInput
     float4 color : COLOR0;
 };
 
-cbuffer TransformBuffer
+cbuffer TransformBuffer : register(b0) // 0~13번까지 7096 (16byte정렬)
 {
-    
+    matrix world; //행우선 행렬
+    matrix view;  
+    matrix proj;  
 };
 
 PixelInput VS(VertexInput input)
 {
-    PixelInput output;
-    output.position = input.position;
-    output.color = input.color;
     
+    PixelInput output;
+    output.position = mul(input.position, world);
+    output.position = mul(output.position, view);
+    output.position = mul(output.position, proj);//클리핑 스페이스 포함
+    
+    output.color = input.color;
     
     return output;
 }

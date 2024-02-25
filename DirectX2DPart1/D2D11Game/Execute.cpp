@@ -127,6 +127,9 @@ Execute::Execute()
 		
 		D3DXMatrixLookAtLH(&view,&D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(0, 0, 1), &D3DXVECTOR3(0, 1, 0));
 		D3DXMatrixOrthoLH(&projection, Settings::Get().GetWidth(), Settings::Get().GetHeight(),0,1);
+		
+		//얘는 Y축이 아래! (윈도우 좌표)
+		//D3DXMatrixOrthoOffCenterLH(&view, 0, Settings::Get().GetWidth(),  0, Settings::Get().GetHeight(), 0, 1);
 
 		//ortho:직교(앞뒤거리 관계 없이 보여줌)
 		//perspec:원근(앞뒤거리 느껴짐)[절두체]
@@ -136,7 +139,6 @@ Execute::Execute()
 		std::cout << view._21 << " " << view._22 << " " << view._23 << " " << view._24 << std::endl;
 		std::cout << view._31 << " " << view._32 << " " << view._33 << " " << view._34 << std::endl;
 		std::cout << view._41 << " " << view._42 << " " << view._43 << " " << view._44 << std::endl;
-
 		std::cout << std::endl;
 
 		std::cout << "Projection Matrix" << std::endl;
@@ -144,11 +146,73 @@ Execute::Execute()
 		std::cout << projection._21 << " " << projection._22 << " " << projection._23 << " " << projection._24 << std::endl;
 		std::cout << projection._31 << " " << projection._32 << " " << projection._33 << " " << projection._34 << std::endl;
 		std::cout << projection._41 << " " << projection._42 << " " << projection._43 << " " << projection._44 << std::endl;
+		std::cout << std::endl;
+
+		//world
+		D3DXMATRIX S;
+		D3DXMatrixScaling(&S, 100, 100, 1);//스케일 세팅 시 1 이상의 값 (크기 변경) //이전 데이터 모두 고정
+		
+		std::cout << "Scale Matrix" << std::endl;
+		std::cout << S._11 << " " << S._12 << " " << S._13 << " " << S._14 << std::endl;
+		std::cout << S._21 << " " << S._22 << " " << S._23 << " " << S._24 << std::endl;
+		std::cout << S._31 << " " << S._32 << " " << S._33 << " " << S._34 << std::endl;
+		std::cout << S._41 << " " << S._42 << " " << S._43 << " " << S._44 << std::endl;
+		std::cout << std::endl;
+
+		D3DXMATRIX T;
+		D3DXMatrixTranslation(&T, 100, 100, 0);
+		std::cout << "Translation Matrix" << std::endl;
+		std::cout << T._11 << " " << T._12 << " " << T._13 << " " << T._14 << std::endl;
+		std::cout << T._21 << " " << T._22 << " " << T._23 << " " << T._24 << std::endl;
+		std::cout << T._31 << " " << T._32 << " " << T._33 << " " << T._34 << std::endl;
+		std::cout << T._41 << " " << T._42 << " " << T._43 << " " << T._44 << std::endl;
+		std::cout << std::endl;
+
+		D3DXMATRIX R;
+		D3DXMatrixRotationZ(&R, static_cast<float>D3DXToRadian(45));//얘 라디안이다!
+		std::cout << "Rotation Matrix" << std::endl;
+		std::cout << R._11 << " " << R._12 << " " << R._13 << " " << R._14 << std::endl;
+		std::cout << R._21 << " " << R._22 << " " << R._23 << " " << R._24 << std::endl;
+		std::cout << R._31 << " " << R._32 << " " << R._33 << " " << R._34 << std::endl;
+		std::cout << R._41 << " " << R._42 << " " << R._43 << " " << R._44 << std::endl;
+		std::cout << std::endl;
+
+		//스 자(자전) 이 공(공전) 부(부모)
+		//S R T R P
+		world = S */* R * */T;
+		//행렬엔 교환법칙 안된다잉~
+	}
+	//Create constant buffer
+	{
+		D3D11_BUFFER_DESC desc;
+		ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
+		desc.Usage = D3D11_USAGE_DYNAMIC; //cpu:write gpu:read
+		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		desc.ByteWidth = sizeof(TRANSFORM_DATA);
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;//CPU의 상태
+		auto hr = graphics->GetDevice()->CreateBuffer(&desc, nullptr, &gpu_buffer);
+		assert(SUCCEEDED(hr));
+	}
+	//Create Rasterizer State
+	{
+		D3D11_RASTERIZER_DESC desc;
+		ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
+		desc.FillMode = D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_BACK;//어떤 면을 그리지 않게 할 건지!(뒷면 가리개용)
+		//cliping: 그리고 나서 잘라내기!
+		desc.FrontCounterClockwise = false;//앞면 뒷면 판단하게 하는 놈! [시계방향: 앞면, 반시계방향:뒷면]
+		//왼손 좌표계에서는 시계방향을 쓰는 게 계산할 때 편하다!
+
+		auto hr = graphics->GetDevice()->CreateRasterizerState(&desc, &rasterizer_state);
+		assert(SUCCEEDED(hr));
 	}
 }
 
 Execute::~Execute()
 {
+	SAFE_RELEASE(rasterizer_state);
+
+	SAFE_RELEASE(gpu_buffer);
 	SAFE_RELEASE(pixel_shader);
 	SAFE_RELEASE(ps_blob);
 
@@ -168,6 +232,31 @@ Execute::~Execute()
 
 void Execute::Update()
 {
+	//D3DXMATRIX = 행우선 행렬
+	//gpu- shader = matrix = 열우선 행렬
+
+	//D3DXMATRIX P;
+	//D3DXMatrixTranslation(&P,1,0,0);
+	//world *= P;
+
+	//전치행렬 - Transpose
+	D3DXMatrixTranspose(&cpu_buffer.world, &world);
+	D3DXMatrixTranspose(&cpu_buffer.view , &view);
+	D3DXMatrixTranspose(&cpu_buffer.projection , &projection);
+
+	//TODO 항상주의 
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource;//중개 개념 (상수 버퍼 자원 갱신 가능)
+	graphics->GetDeviceContext()->Map(
+		gpu_buffer,
+		0,
+		D3D11_MAP_WRITE_DISCARD,
+		0,
+		&mapped_subresource
+	);//파이프라인 건들땐 디바이스컨텍스트
+
+	memcpy(mapped_subresource.pData, &cpu_buffer, sizeof(TRANSFORM_DATA));
+
+	graphics->GetDeviceContext()->Unmap(gpu_buffer, 0);
 }
 
 void Execute::Render()
@@ -186,6 +275,10 @@ void Execute::Render()
 		
 		//VS : vertex Shader
 		graphics->GetDeviceContext()->VSSetShader(vertex_shader, nullptr, 0);//정점의 개수만큼 호출됨
+		graphics->GetDeviceContext()->VSSetConstantBuffers(0, 1, &gpu_buffer);
+
+		//RS
+		graphics->GetDeviceContext()->RSSetState(rasterizer_state);
 
 		//PS
 		graphics->GetDeviceContext()->PSSetShader(pixel_shader, nullptr, 0);

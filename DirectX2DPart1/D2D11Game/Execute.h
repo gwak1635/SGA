@@ -53,12 +53,14 @@ private:
 
 	TRANSFORM_DATA cpu_buffer;
 	ID3D11Buffer* gpu_buffer = nullptr; // 상수 버퍼
+
+	ID3D11RasterizerState* rasterizer_state = nullptr;
 };
 
 //렌더링 파이프라인
 //화면에 표시되기 위해 순차적으로 자료가 가공되는 단계
 // IA VS RS PS OM
-//VS,RS단계는 코딩 가능
+//VS,PS단계는 코딩 가능
 
 //IA : Input Assembler stage
 //점:vertex(직접 커스터마이징해 사용해야 함)
@@ -72,6 +74,11 @@ private:
 //Begin에 OM과 RS가 있음 
 //NDC: 0~1로 정규화된 것(늘어짐)
 //트랜스폼: 그걸 또 픽셀로 바꿈
+//Clipping
+//NDC
+//Back-face Culling //보이지 않는 면 제거
+//Viewport Transform
+//Scan Transform
 
 //PS : 
 
