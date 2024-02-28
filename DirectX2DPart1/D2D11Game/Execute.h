@@ -55,6 +55,10 @@ private:
 	ID3D11Buffer* gpu_buffer = nullptr; // 상수 버퍼
 
 	ID3D11RasterizerState* rasterizer_state = nullptr;
+
+	//텍스쳐
+	//id3d311텍스쳐2d
+	//
 };
 
 //렌더링 파이프라인
