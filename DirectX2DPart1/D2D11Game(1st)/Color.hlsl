@@ -1,5 +1,5 @@
 struct VertexInput
-{//float°¡ 4°³!
+{//floatê°€ 4ê°œ!
     float4 position : POSITION0;
     float4 color : COLOR0;
 };
@@ -10,9 +10,9 @@ struct PixelInput
     float4 color : COLOR0;
 };
 
-cbuffer TransformBuffer : register(b0) // 0~13¹ø±îÁö 7096 (16byteÁ¤·Ä)
+cbuffer TransformBuffer : register(b0) // 0~13ë²ˆê¹Œì§€ 7096 (16byteì •ë ¬)
 {
-    matrix world; //Çà¿ì¼± Çà·Ä
+    matrix world; //í–‰ìš°ì„  í–‰ë ¬
     matrix view;  
     matrix proj;  
 };
@@ -23,16 +23,16 @@ PixelInput VS(VertexInput input)
     PixelInput output;
     output.position = mul(input.position, world);
     output.position = mul(output.position, view);
-    output.position = mul(output.position, proj);//Å¬¸®ÇÎ ½ºÆäÀÌ½º Æ÷ÇÔ
+    output.position = mul(output.position, proj);//í´ë¦¬í•‘ ìŠ¤í˜ì´ìŠ¤ í¬í•¨
     
     output.color = input.color;
     
     return output;
 }
 
-//·¡½ºÅÍ¶óÀÌÀú°¡ ÁöÁ¤ÇÑ ÇÈ¼¿ °³¼ö¸¸Å­ È£Ãâ
+//ë˜ìŠ¤í„°ë¼ì´ì €ê°€ ì§€ì •í•œ í”½ì…€ ê°œìˆ˜ë§Œí¼ í˜¸ì¶œ
 float4 PS(PixelInput input) : SV_Target
 {
-    return input.color;//¾îµğ´Ù ±×·Á¾ß ÇÒÁö ¸ğ¸§
+    return input.color;//ì–´ë””ë‹¤ ê·¸ë ¤ì•¼ í• ì§€ ëª¨ë¦„
 }
-//hlslÀº ÁøÀÔÁ¡ ´ÜÀ§ ÄÄÆÄÀÏ
+//hlslì€ ì§„ì…ì  ë‹¨ìœ„ ì»´íŒŒì¼
