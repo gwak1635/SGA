@@ -56,9 +56,14 @@ private:
 
 	ID3D11RasterizerState* rasterizer_state = nullptr;
 
-	//텍스쳐
-	//id3d311텍스쳐2d
-	//
+	ID3D11ShaderResourceView* shader_resource;
+	/*
+	정점에 이미지 붙이기
+	이미지텍스쳐
+	id3d311텍스쳐2d(용도 불명확)
+	용도 명확히하기위해 리소스뷰 사용
+	[RTV, DSV, SRV<정점에 이미지 붙이는용>[읽기 전용], UAV]
+	*/
 };
 
 //렌더링 파이프라인

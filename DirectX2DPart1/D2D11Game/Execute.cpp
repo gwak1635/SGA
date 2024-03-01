@@ -206,10 +206,24 @@ Execute::Execute()
 		auto hr = graphics->GetDevice()->CreateRasterizerState(&desc, &rasterizer_state);
 		assert(SUCCEEDED(hr));
 	}
+	//Create Shader Resource View
+	{
+		auto hr = D3DX11CreateShaderResourceViewFromFileA(//얘는 구버전(더 이상 지원되지 않음)
+			graphics->GetDevice(),
+			"hexapenguin.png",
+			nullptr,
+			nullptr,
+			&shader_resource,
+			nullptr
+		);
+		assert(SUCCEEDED(hr));
+	}
 }
 
 Execute::~Execute()
 {
+	SAFE_RELEASE(shader_resource);
+
 	SAFE_RELEASE(rasterizer_state);
 
 	SAFE_RELEASE(gpu_buffer);
