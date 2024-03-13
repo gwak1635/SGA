@@ -5,6 +5,7 @@
 #include "../E10/E10.h"
 #include "../E11/E11.h"
 #include "../E12/E12.h"
+#include "../E13/E13.h"
 
 class Scene
 {
@@ -16,6 +17,7 @@ public:
     void e10();
     void e11();
     void e12();
+    void e13();
 private:
 
 };

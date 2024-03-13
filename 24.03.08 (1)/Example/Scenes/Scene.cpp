@@ -119,3 +119,14 @@ void Scene::e12()
 	delete cat;
 	delete anim;
 }
+
+void Scene::e13()
+{
+	E13* e13 = new E13();
+
+	
+
+
+	delete e13;
+	e13 = nullptr;
+}
