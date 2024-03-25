@@ -17,6 +17,7 @@ public:
 
 	WPARAM Run(IObject* mainObj); //게임루프 함수
 private:
+
 	//함수호출 규약
 	//stdcall
 	//cdecl
