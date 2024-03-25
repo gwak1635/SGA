@@ -19,12 +19,16 @@ void IndexBuffer::Create(const vector<uint>& indices, const D3D11_USAGE& usage)
 
     // desc 설정
     {
+        // Cpu와 gpu가 어떻게 데이터를 사용할건지 지정하는
         // 사용 용도
         desc.Usage = usage;
+
         // 사용 목적
         desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        
         // 버퍼 크기
         desc.ByteWidth = stride * count;
+        
         // cpu 설정
         // GPU는 모든 데이터 접근할수 있다.
         switch (usage)

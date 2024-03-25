@@ -11,8 +11,8 @@ public:
     // Create에서 템플릿을 사용한 이유는 그릴 사각형에 따라
     // 다른 데이터를 건내줘야 하기 때문이다.
     template<typename T>
-    void Create(const vector<T>& vertices,
-        const D3D11_USAGE& usage = D3D11_USAGE_DEFAULT);
+    //정점들의 벡터를 const로(변경 불가능하게 함) 받음.
+    void Create(const vector<T>& vertices, const D3D11_USAGE& usage = D3D11_USAGE_DEFAULT);
 
     ID3D11Buffer* GetResource() { return buffer; }
 
