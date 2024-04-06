@@ -43,7 +43,7 @@ private:
 	IDXGISwapChain* swapChain = nullptr;
 	ID3D11RenderTargetView* rtv = nullptr;
 	D3D11_VIEWPORT viewport;
-	D3DXCOLOR clearColor = CLEAR_COLOR;
+	D3DXCOLOR clearColor = 0xff73e6e1;
 
 	UINT numerator = 0;
 	UINT denominator = 1;

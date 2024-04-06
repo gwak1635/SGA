@@ -3,30 +3,27 @@
 
 InputLayout::~InputLayout()
 {
-    SAFE_RELEASE(inputLayout);
+    SAFE_RELEASE(il);
 }
 
-void InputLayout::Create(D3D11_INPUT_ELEMENT_DESC* descs, uint count, ID3DBlob* blob)
+void InputLayout::Create(D3D11_INPUT_ELEMENT_DESC* descs, UINT count, ID3DBlob* blob)
 {
-    // 만약에 매게변수중 하나라도 없다면 폭파
+    // 매게변수중 하나라도 없을경우
     if (!descs || !count || !blob)
-        CHECK(false);
+        CHECK(false); // 프로그램 강제 종료
 
     HRESULT hr = DEVICE->CreateInputLayout
     (
-        // 설계도, 요청서
-        descs,
-        // 요소의 개수
-        count,
-        // blob = 메모리 블록
-        // blob안에는 버퍼의 다양한 데이터가 들어있다.
-        blob->GetBufferPointer(),
-        blob->GetBufferSize(),
-        &inputLayout
+        descs,                      // 설계도
+        count,                      // 설계도 개수
+        blob->GetBufferPointer(),   // VertexBuffer의 위치
+        blob->GetBufferSize(),      // VertexBuffer의 크기
+        &il
     );
+    CHECK(hr);
 }
 
 void InputLayout::SetIA()
 {
-    DC->IASetInputLayout(inputLayout);
+    DC->IASetInputLayout(il);
 }

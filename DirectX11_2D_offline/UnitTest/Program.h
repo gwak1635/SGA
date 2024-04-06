@@ -12,7 +12,7 @@ class Program : public IObject
 private:
 	void Push(IObject* obj);
 
-	VPBuffer* vpb = nullptr; // 쉽게 말해 카메라
+	VPBuffer* vpb = nullptr;
 	Matrix view, proj;
 
 	vector<IObject*> objs;

@@ -14,20 +14,6 @@
     <ClCompile Include="Renders\Resources\VertexType.cpp" />
     <ClCompile Include="Renders\Shaders\IShader.cpp" />
     <ClCompile Include="Renders\Shaders\VertexShader.cpp" />
-    <ClCompile Include="Renders\Shaders\PixelShader.cpp" />
-    <ClCompile Include="Geomatries\Rect.cpp" />
-    <ClCompile Include="Utilities\BoundingBox.cpp" />
-    <ClCompile Include="Geomatries\TextureRect.cpp" />
-    <ClCompile Include="Charactor\Player.cpp" />
-    <ClCompile Include="Geomatries\ShadedTexture.cpp" />
-    <ClCompile Include="Geomatries\AlphaTexture.cpp" />
-    <ClCompile Include="Utilities\DirectHelper.cpp" />
-    <ClCompile Include="Utilities\Path.cpp" />
-    <ClCompile Include="Utilities\String.cpp" />
-    <ClCompile Include="Utilities\FileStream.cpp" />
-    <ClCompile Include="Utilities\Random.cpp" />
-    <ClCompile Include="Renders\Resources\Texture2D.cpp" />
-    <ClCompile Include="Utilities\Animator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Graphics.h" />
@@ -47,19 +33,5 @@
     <ClInclude Include="Renders\Resources\GlobalBuffer.h" />
     <ClInclude Include="Renders\Shaders\IShader.h" />
     <ClInclude Include="Renders\Shaders\VertexShader.h" />
-    <ClInclude Include="Renders\Shaders\PixelShader.h" />
-    <ClInclude Include="Geomatries\Rect.h" />
-    <ClInclude Include="Utilities\BoundingBox.h" />
-    <ClInclude Include="Geomatries\TextureRect.h" />
-    <ClInclude Include="Charactor\Player.h" />
-    <ClInclude Include="Geomatries\ShadedTexture.h" />
-    <ClInclude Include="Geomatries\AlphaTexture.h" />
-    <ClInclude Include="Utilities\DirectHelper.h" />
-    <ClInclude Include="Utilities\Path.h" />
-    <ClInclude Include="Utilities\String.h" />
-    <ClInclude Include="Utilities\FileStream.h" />
-    <ClInclude Include="Utilities\Random.h" />
-    <ClInclude Include="Renders\Resources\Texture2D.h" />
-    <ClInclude Include="Utilities\Animator.h" />
   </ItemGroup>
 </Project>

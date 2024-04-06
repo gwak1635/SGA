@@ -1,74 +1,70 @@
 #pragma once
 #include "Framework.h"
 
-// 정점 데이터 이외의 데이터를 CPU에서 GPU로 넘겨줄때 사용할 버퍼
-// 주로 상속을 해줄 객체 // 부모 객체
+// CPU가 GPU에게 정점이 아닌 데이터를 건내주기 위한 용도로 사용
 class ShaderBuffer
 {
 public:
-
-    void SetVSBuffer(uint slot)
+    void SetVSBuffer(UINT slot)
     {
-        // 데이터를 복사해서
         MapData();
-        // VS에서 사용할 데이터를 1개 넘겨주겠다
         DC->VSSetConstantBuffers(slot, 1, &buffer);
     }
 
-    void SetPSBuffer(uint slot)
+    void SetPSBuffer(UINT slot)
     {
-        // 데이터를 복사해서
         MapData();
-        // PS에서 사용할 데이터를 1개 넘겨주겠다
         DC->PSSetConstantBuffers(slot, 1, &buffer);
     }
-
 protected:
-    // GPU는 정점 이외의 데이터를 받을땐 상수 버퍼를 통해 받는다.
-    ShaderBuffer(void* data, uint dataSize)
+    ShaderBuffer(void* data, UINT dataSize)
         : data(data), dataSize(dataSize)
     {
-        desc.Usage = D3D11_USAGE_DYNAMIC;               // 사용 용도
-        desc.ByteWidth = dataSize;                      // 버퍼 크기
-        desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;    // 바인딩 대상
-        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;   // CPU 접근 방식
+        // 버퍼의 사용 용도 // DYNAMIC = CPU에서 수정 가능
+        desc.Usage = D3D11_USAGE_DYNAMIC;
+        // 버퍼의 크기
+        desc.ByteWidth = dataSize;
+        // 사용 목적 // CONSTANT_BUFFER = 상수 버퍼로 사용할 것이다.
+        desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        // CPU 접근 방식
+        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-        // 버퍼 만들기
         HRESULT hr = DEVICE->CreateBuffer(&desc, nullptr, &buffer);
         CHECK(hr);
     }
 
-private:
-    // DirectX에서 Map은 데이터를 잠시 묶고 해당 데이터를 런타임중에
-    // 수정하거나 복사하는 기능을 허락하는걸 Map이라 부르고
-    // Map을 했으면 반드시 Unmap을 실행해 줘야한다. // 데이터 매핑
+private: // 함수
+
+    // Map은 DirectX에서 런타임중에 메모리가 가지고 있는 데이터를 수정하는
+    // 기능을 말한다.
+    // Map을 사용하는 이유는 런타임중에 중요한 데이터가 손상없이 수정 가능하도록
+    // 하기 위해서 인데, 그렇기 때문에 굳이 중요한 데이터가 아니라면
+    // Map을 사용하진 않는다.
+    // Map은 반드시 D3D11_MAPPED_SUBRESOURCE를 이용해 메모리를 수정하는데
+    // D3D11_MAPPED_SUBRESOURCE 는 거의 모든 데이터를 저장하고 옮길수 있는
+    // 구조체 이다.
     void MapData()
     {
-        // 데이터를 임시적으로 보관할 변수
-        D3D11_MAPPED_SUBRESOURCE subResource;
-
+        // 데이터 맵핑을 도와줄 구조체
+        D3D11_MAPPED_SUBRESOURCE subRe;
+        // 데이터 맵핑
         HRESULT hr = DC->Map
         (
-            buffer,                     // 매핑할 대상
-            0,                          // 매핑 시작 위치 (0은 처음부터)
-            D3D11_MAP_WRITE_DISCARD,    // 매핑 방법 (지우고 다시 쓰겠다)
-            0,                          // 추가로 매핑할 하위 리소스
-            &subResource                // 매핑한 데이터를 저장할 변수
+            buffer,                 // 매핑할 대상
+            0,                      // 매핑 시작 위치 (0 = 처음부터)
+            D3D11_MAP_WRITE_DISCARD,// 매핑 방법 // WRITE_DISCARD는 지웠다 다시
+            0,                      // 추가로 맵핑할 대상 (0 = 없음)
+            &subRe                  // 매핑 데이터를 보관할 구조체
         );
         CHECK(hr);
-
-        // 데이터 복사 (여기있는 데이터를, 여기에다, 이만큼)
-        memcpy(subResource.pData, data, dataSize);
-
+        // 메모리 복사 // subRe가 가지고있는 데이터를 data에게 dataSize만큼
+        memcpy(subRe.pData, data, dataSize);
         DC->Unmap(buffer, 0);
     }
-
-private:
+private: // 변수
     D3D11_BUFFER_DESC desc = { 0 };
     ID3D11Buffer* buffer = nullptr;
 
-    // void*는 자료형이 정해져있지 않은 포인터로 
-    // 어떠한 자료형의 데이터도 가리킬수있는 포인터이다.
     void* data = nullptr;
-    uint dataSize = 0;
+    UINT dataSize = 0;
 };
