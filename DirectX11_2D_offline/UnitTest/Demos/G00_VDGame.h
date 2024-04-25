@@ -13,6 +13,14 @@ public:
     void PostRender() override;
     void GUI() override;
 
+private:
+    vector <Rect*> floor;
+    Rect* begin = nullptr;
+    Rect* end = nullptr;
+    vector <Rect*> Hwall;
+    vector <Rect*> Vwall;
+    vector <Rect*> hazard;
+    Rect* player = nullptr;
 };
 
 /*

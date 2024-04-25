@@ -5,6 +5,7 @@
 
 #include "Demos/00_RectDemo.h"
 #include "Demos/01_CollisionDemo.h"
+#include "Demos/G00_VDGame.h"
 
 void Program::Init()
 {
@@ -43,7 +44,8 @@ void Program::Init()
 	}
 
 	// Push(new RectDemo);
-	Push(new CollisionDemo);
+	// Push(new CollisionDemo);
+	Push(new VDGame);
 }
 
 void Program::Destroy()

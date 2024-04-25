@@ -8,7 +8,7 @@ void CollisionDemo::Init()
         Vector3(100, 100, 1), 0.0f);
 
     r2 = new Rect(
-        Vector3(WinMaxWidth * 0.5f, WinMaxHeight * 0.5f, 0),
+        Vector3(WinMaxHeight * 0.5f, WinMaxHeight * 0.5f, 0),
         Vector3(100, 100, 1), 0.0f);
 
     r1->UpdateWorld();

@@ -25,9 +25,20 @@ public:
 
     void Move();
 
+    void AutoMove();
+
+    void RevercemoveWS();
+
+    void RevercemoveAD();
+
     void Jump();
 
     BoundingBox* GetCollision() { return collision; }
+
+    void SetGoingLeft(bool left) { isGoleft = left; }
+    
+    void GotoBegin();
+
 private:
     // 정점의 데이터 // 사각형이니까 4개 필요함 그래서 vector로 선언
     vector<VertexColor> vertices;
@@ -84,4 +95,11 @@ private:
 
     Vector3 verticesPosition[4];
 
+    //장애물이 어느쪽으로 이동할지에 대한 변수
+    bool isGoleft = true;
+
+    bool LockW = false;
+    bool LockA = false;
+    bool LockS = false;
+    bool LockD = false;
 };

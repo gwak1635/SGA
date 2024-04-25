@@ -191,7 +191,7 @@ void Rect::UpdateWorld()
 
 void Rect::Move()
 {
-    float mSpd = 100.0f;
+    float mSpd = 200.0f;
 
     if (bJump) Jump();
 
@@ -231,11 +231,72 @@ void Rect::Move()
 
     if (Keyboard::Get()->Up('D')) moveR = false;
 
+    /*
     if (Keyboard::Get()->Down(VK_SPACE) && !bJump)
     {
         bJump = true;
         jumpStartY = position.y;
     }
+    */
+}
+
+void Rect::AutoMove() {
+    float mSpd = 400.0f;
+
+    if (isGoleft) {
+        position.x -= mSpd * Time::Delta();
+        if (position.x <= WinMaxWidth * 0.5f - 240)
+            isGoleft = false;
+    }
+    else {
+        position.x += mSpd * Time::Delta();
+        if (position.x >= WinMaxWidth * 0.5f + 240)
+            isGoleft = true;
+    }
+}
+
+void Rect::RevercemoveWS() {
+    float mSpd = 200.0f;
+
+    if (Keyboard::Get()->Press('W'))
+    {
+        // rect가 아래쪽으로 이동되게
+        position.y -= mSpd * Time::Delta();
+        if (Keyboard::Get()->Press('S') && moveD == false)
+        {
+            position.y += (mSpd * 2) * Time::Delta();
+        }
+    }
+    else if (Keyboard::Get()->Press('S'))
+    {
+        // rect가 아래쪽으로 이동되게
+        position.y += mSpd * Time::Delta();
+        moveD = true;
+    }
+
+    if (Keyboard::Get()->Up('S')) moveD = false;
+}
+
+void Rect::RevercemoveAD() {
+    float mSpd = 200.0f;
+
+    if (Keyboard::Get()->Press('A'))
+    {
+        // rect가 역으로 오른쪽으로 이동되게
+        position.x += mSpd * Time::Delta();
+        if (Keyboard::Get()->Press('D') && !moveR)
+        {
+            position.x -= (mSpd * 2) * Time::Delta();
+        }
+    }
+    else if (Keyboard::Get()->Press('D'))
+    {
+        // rect가 왼쪽 이동되게
+        position.x -= mSpd * Time::Delta();
+        moveR = true;
+    }
+
+    if (Keyboard::Get()->Up('D')) moveR = false;
 }
 
 void Rect::Jump()
@@ -311,4 +372,9 @@ void Rect::Jump()
             curJumpT += Time::Delta();
         }
     }
+}
+
+void Rect::GotoBegin()
+{
+    position = Vector3(WinMaxWidth * 0.5f - 375, WinMaxHeight * 0.5f, 0);
 }

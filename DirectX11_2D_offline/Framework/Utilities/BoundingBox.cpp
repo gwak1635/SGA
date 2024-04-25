@@ -27,6 +27,7 @@ void BoundingBox::UpdateData(const Matrix world, const Vector3 verticesLocalPosi
             &verticesLocalPosition[2], &world);
     }
 
+    /*
     //OBB
     {
         //CenterPos Vector
@@ -80,6 +81,7 @@ void BoundingBox::UpdateData(const Matrix world, const Vector3 verticesLocalPosi
 
         }
     }
+    */
 }
 
 bool BoundingBox::AABB(BoundingBox* a, BoundingBox* b)
