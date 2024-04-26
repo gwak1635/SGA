@@ -17,6 +17,7 @@
     <ClCompile Include="Renders\Shaders\PixelShader.cpp" />
     <ClCompile Include="Geometries\Rect.cpp" />
     <ClCompile Include="Utilities\BoundingBox.cpp" />
+    <ClCompile Include="Utilities\Random.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Graphics.h" />
@@ -39,5 +40,6 @@
     <ClInclude Include="Renders\Shaders\PixelShader.h" />
     <ClInclude Include="Geometries\Rect.h" />
     <ClInclude Include="Utilities\BoundingBox.h" />
+    <ClInclude Include="Utilities\Random.h" />
   </ItemGroup>
 </Project>

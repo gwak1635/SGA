@@ -79,6 +79,7 @@ typedef UINT		uint;
 #include "Renders/Shaders/PixelShader.h"
 
 #include "Utilities/BoundingBox.h"
+#include "Utilities/Random.h"
 
 #define WinMaxWidth 1280
 #define WinMaxHeight 720

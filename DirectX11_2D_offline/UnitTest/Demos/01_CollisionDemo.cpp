@@ -25,9 +25,17 @@ void CollisionDemo::Update()
 {
     r1->Move();
 
-    if (BoundingBox::AABB(r1->GetCollision(), r2->GetCollision()))
+    if (BoundingBox::AABB(r1->GetCollision(), r2->GetCollision())||
+        BoundingBox::OBB(r1->GetCollision(), r2->GetCollision()))
     {
-        r2->SetColor(Color(0, 1, 0, 1));
+        //r2->SetColor(Color(0, 1, 0, 1));
+        r2->SetPosition(
+            {
+                (float)Random::GetRandomInt(100,1000),
+                r2->GetPosition().y,
+                r2->GetPosition().z
+            }
+        );
     }
     else
     {
@@ -50,4 +58,5 @@ void CollisionDemo::PostRender()
 
 void CollisionDemo::GUI()
 {
+    r2->GUI();
 }

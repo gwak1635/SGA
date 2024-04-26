@@ -4,6 +4,7 @@
 BoundingBox::BoundingBox()
 {
     edge = new RectEdge();
+    data = new AxisData();
 }
 
 BoundingBox::~BoundingBox()
@@ -27,7 +28,7 @@ void BoundingBox::UpdateData(const Matrix world, const Vector3 verticesLocalPosi
             &verticesLocalPosition[2], &world);
     }
 
-    /*
+    
     //OBB
     {
         //CenterPos Vector
@@ -81,7 +82,7 @@ void BoundingBox::UpdateData(const Matrix world, const Vector3 verticesLocalPosi
 
         }
     }
-    */
+   
 }
 
 bool BoundingBox::AABB(BoundingBox* a, BoundingBox* b)
@@ -98,6 +99,79 @@ bool BoundingBox::AABB(BoundingBox* a, BoundingBox* b)
         return true;
 
     return false;
+}
+
+bool BoundingBox::OBB(BoundingBox* a, BoundingBox* b)
+{
+    if (a == nullptr || b == nullptr) return false;
+
+    AxisData aData = *a->data;
+    AxisData bData = *b->data;
+
+    Vector3 centerDir, axis;
+    float centerProjDist, r1, r2;
+
+
+    //a와 b사이의 거리
+    centerDir = aData.centerPos - bData.centerPos;
+
+    //arect:x축
+    {
+        axis = aData.axisDir[x];
+
+        centerProjDist = abs(D3DXVec3Dot(&centerDir, &axis));
+
+        r1 = aData.axisLen[x];
+        r2 = abs(D3DXVec3Dot(&bData.axisDir[x], &axis) * bData.axisLen[x]) +
+            abs(D3DXVec3Dot(&bData.axisDir[y], &axis) * bData.axisLen[y]);
+
+        if (centerProjDist > r1 + r2)
+            return false;
+    }
+
+    //arect:y축
+    {
+        axis = aData.axisDir[y];
+
+        centerProjDist = abs(D3DXVec3Dot(&centerDir, &axis));
+
+        r1 = aData.axisLen[y];
+        r2 = abs(D3DXVec3Dot(&bData.axisDir[x], &axis) * bData.axisLen[x]) +
+            abs(D3DXVec3Dot(&bData.axisDir[y], &axis) * bData.axisLen[y]);
+
+        if (centerProjDist > r1 + r2)
+            return false;
+    }
+
+    //brect:x축
+    {
+        axis = bData.axisDir[x];
+
+        centerProjDist = abs(D3DXVec3Dot(&centerDir, &axis));
+
+        r1 = bData.axisLen[x];
+        r2 = abs(D3DXVec3Dot(&aData.axisDir[x], &axis) * aData.axisLen[x]) +
+            abs(D3DXVec3Dot(&aData.axisDir[y], &axis) * aData.axisLen[y]);
+
+        if (centerProjDist > r1 + r2)
+            return false;
+    }
+
+    //brect:y축
+    {
+        axis = bData.axisDir[y];
+
+        centerProjDist = abs(D3DXVec3Dot(&centerDir, &axis));
+
+        r1 = bData.axisLen[y];
+        r2 = abs(D3DXVec3Dot(&aData.axisDir[x], &axis) * aData.axisLen[x]) +
+            abs(D3DXVec3Dot(&aData.axisDir[y], &axis) * aData.axisLen[y]);
+
+        if (centerProjDist > r1 + r2)
+            return false;
+    }
+
+    return true;
 }
 
 //OBB충돌: 직사각형-마름모 충돌

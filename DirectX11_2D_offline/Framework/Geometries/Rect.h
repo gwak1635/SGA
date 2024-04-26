@@ -39,6 +39,9 @@ public:
     
     void GotoBegin();
 
+    Vector3 GetPosition() { return position; }
+    void SetPosition(Vector3 pos) { position = pos; }
+
 private:
     // 정점의 데이터 // 사각형이니까 4개 필요함 그래서 vector로 선언
     vector<VertexColor> vertices;
