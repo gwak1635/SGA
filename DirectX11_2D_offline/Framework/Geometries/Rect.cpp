@@ -240,6 +240,27 @@ void Rect::Move()
     */
 }
 
+void Rect::TraceMove(Vector3 mypos, Vector3 playerpos) {
+    float mSpd = 150.0f;
+
+    if (mypos.y<playerpos.y)
+    {
+        position.y += mSpd * Time::Delta();
+    }
+    else if (mypos.y > playerpos.y)
+    {
+        position.y -= mSpd * Time::Delta();
+    }
+    if (mypos.x > playerpos.x)
+    {
+        position.x -= mSpd * Time::Delta();
+    }
+    else if (mypos.x < playerpos.x)
+    {
+        position.x += mSpd * Time::Delta();
+    }
+}
+
 void Rect::AutoMove() {
     float mSpd = 400.0f;
 
@@ -372,9 +393,4 @@ void Rect::Jump()
             curJumpT += Time::Delta();
         }
     }
-}
-
-void Rect::GotoBegin()
-{
-    position = Vector3(WinMaxWidth * 0.5f - 375, WinMaxHeight * 0.5f, 0);
 }

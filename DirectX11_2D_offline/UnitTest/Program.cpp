@@ -8,6 +8,7 @@
 #include "Demos/02_TextureDemo.h"
 #include "Demos/03_ShaderDemo.h"
 #include "Demos/G00_VDGame.h"
+#include "Demos/G01_TGame.h"
 
 void Program::Init()
 {
@@ -49,7 +50,8 @@ void Program::Init()
 	//Push(new CollisionDemo);
 	// Push(new VDGame);
 	//Push(new TextureDemo);
-	Push(new ShaderDemo);
+	//Push(new ShaderDemo);
+	Push(new Tgame);
 }
 
 void Program::Destroy()

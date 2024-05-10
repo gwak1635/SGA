@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Geometries/Rect.h"
+#include "Utilities/Random.h"
 
 class Tgame : public IObject {
+public:
 	// IObject을(를) 통해 상속됨
 	void Init() override;
 	void Destroy() override;
@@ -10,6 +12,10 @@ class Tgame : public IObject {
 	void Render() override;
 	void PostRender() override;
 	void GUI() override;
+
+private:
+	Rect* player = nullptr;
+	Rect* enemy = nullptr;
 };
 
 /*

@@ -170,7 +170,7 @@ void VDGame::Update()
     {
         r->AutoMove();
         if (BoundingBox::AABB(player->GetCollision(), r->GetCollision()))
-            player->GotoBegin();
+            player->SetPosition(Vector3(WinMaxWidth * 0.5f - 375, WinMaxHeight * 0.5f, 0));
     }
     for (Rect* r : hazard)
     {

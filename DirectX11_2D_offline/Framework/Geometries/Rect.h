@@ -25,6 +25,8 @@ public:
 
     void Move();
 
+    void TraceMove(Vector3 mypos, Vector3 playerpos);
+
     void AutoMove();
 
     void RevercemoveWS();
@@ -37,8 +39,6 @@ public:
 
     void SetGoingLeft(bool left) { isGoleft = left; }
     
-    void GotoBegin();
-
     Vector3 GetPosition() { return position; }
     void SetPosition(Vector3 pos) { position = pos; }
 
