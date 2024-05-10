@@ -149,6 +149,8 @@
   <ItemGroup>
     <ClInclude Include="Demos\00_RectDemo.h" />
     <ClInclude Include="Demos\01_CollisionDemo.h" />
+    <ClInclude Include="Demos\02_TextureDemo.h" />
+    <ClInclude Include="Demos\03_ShaderDemo.h" />
     <ClInclude Include="Demos\G00_VDGame.h" />
     <ClInclude Include="Demos\G01_TGame.h" />
     <ClInclude Include="Program.h" />
@@ -157,6 +159,8 @@
   <ItemGroup>
     <ClCompile Include="Demos\00_RectDemo.cpp" />
     <ClCompile Include="Demos\01_CollisionDemo.cpp" />
+    <ClCompile Include="Demos\02_TextureDemo.cpp" />
+    <ClCompile Include="Demos\03_ShaderDemo.cpp" />
     <ClCompile Include="Demos\G00_VDGame.cpp" />
     <ClCompile Include="Demos\G01_TGame.cpp" />
     <ClCompile Include="Program.cpp" />

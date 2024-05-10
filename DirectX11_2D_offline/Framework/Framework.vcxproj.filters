@@ -18,6 +18,8 @@
     <ClCompile Include="Geometries\Rect.cpp" />
     <ClCompile Include="Utilities\BoundingBox.cpp" />
     <ClCompile Include="Utilities\Random.cpp" />
+    <ClCompile Include="Geometries\TextureRect.cpp" />
+    <ClCompile Include="Geometries\ShaderTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Graphics.h" />
@@ -41,5 +43,7 @@
     <ClInclude Include="Geometries\Rect.h" />
     <ClInclude Include="Utilities\BoundingBox.h" />
     <ClInclude Include="Utilities\Random.h" />
+    <ClInclude Include="Geometries\TextureRect.h" />
+    <ClInclude Include="Geometries\ShaderTexture.h" />
   </ItemGroup>
 </Project>

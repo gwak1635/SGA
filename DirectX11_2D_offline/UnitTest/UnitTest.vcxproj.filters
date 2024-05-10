@@ -7,6 +7,8 @@
     <ClInclude Include="Demos\G00_VDGame.h" />
     <ClInclude Include="Demos\01_CollisionDemo.h" />
     <ClInclude Include="Demos\G01_TGame.h" />
+    <ClInclude Include="Demos\02_TextureDemo.h" />
+    <ClInclude Include="Demos\03_ShaderDemo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
@@ -14,5 +16,7 @@
     <ClCompile Include="Demos\G00_VDGame.cpp" />
     <ClCompile Include="Demos\01_CollisionDemo.cpp" />
     <ClCompile Include="Demos\G01_TGame.cpp" />
+    <ClCompile Include="Demos\02_TextureDemo.cpp" />
+    <ClCompile Include="Demos\03_ShaderDemo.cpp" />
   </ItemGroup>
 </Project>

@@ -5,6 +5,8 @@
 
 #include "Demos/00_RectDemo.h"
 #include "Demos/01_CollisionDemo.h"
+#include "Demos/02_TextureDemo.h"
+#include "Demos/03_ShaderDemo.h"
 #include "Demos/G00_VDGame.h"
 
 void Program::Init()
@@ -44,8 +46,10 @@ void Program::Init()
 	}
 
 	// Push(new RectDemo);
-	// Push(new CollisionDemo);
-	Push(new VDGame);
+	//Push(new CollisionDemo);
+	// Push(new VDGame);
+	//Push(new TextureDemo);
+	Push(new ShaderDemo);
 }
 
 void Program::Destroy()
