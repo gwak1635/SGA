@@ -20,6 +20,7 @@
     <ClCompile Include="Utilities\Random.cpp" />
     <ClCompile Include="Geometries\TextureRect.cpp" />
     <ClCompile Include="Geometries\ShaderTexture.cpp" />
+    <ClCompile Include="Geometries\AlphaTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Graphics.h" />
@@ -45,5 +46,6 @@
     <ClInclude Include="Utilities\Random.h" />
     <ClInclude Include="Geometries\TextureRect.h" />
     <ClInclude Include="Geometries\ShaderTexture.h" />
+    <ClInclude Include="Geometries\AlphaTexture.h" />
   </ItemGroup>
 </Project>

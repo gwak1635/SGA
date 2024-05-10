@@ -50,8 +50,8 @@ void Program::Init()
 	//Push(new CollisionDemo);
 	// Push(new VDGame);
 	//Push(new TextureDemo);
-	//Push(new ShaderDemo);
-	Push(new Tgame);
+	Push(new ShaderDemo);
+	//Push(new Tgame);
 }
 
 void Program::Destroy()

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Geometries/ShaderTexture.h"
-
+#include "Geometries/AlphaTexture.h"
 class ShaderDemo : public IObject
 {
 public:
@@ -15,4 +15,5 @@ public:
 
 private:
 	ShaderTexture* st = nullptr;
+	AlphaTexture* at = nullptr;
 };

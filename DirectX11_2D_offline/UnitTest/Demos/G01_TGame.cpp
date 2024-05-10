@@ -28,7 +28,6 @@ void Tgame::Update()
     enemy->Update();
 
     if (BoundingBox::AABB(player->GetCollision(), enemy->GetCollision())) {
-
         int x = WinMaxWidth / 2;
         int y = WinMaxHeight / 2;
         while (abs(x - enemy->GetPosition().x) < 100 || abs(y - enemy->GetPosition().y) < 100) {

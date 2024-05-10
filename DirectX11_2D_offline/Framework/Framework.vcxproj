@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
+    <ClCompile Include="Geometries\AlphaTexture.cpp" />
     <ClCompile Include="Geometries\Rect.cpp" />
     <ClCompile Include="Geometries\ShaderTexture.cpp" />
     <ClCompile Include="Geometries\TextureRect.cpp" />
@@ -175,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="Geometries\AlphaTexture.h" />
     <ClInclude Include="Geometries\Rect.h" />
     <ClInclude Include="Geometries\ShaderTexture.h" />
     <ClInclude Include="Geometries\TextureRect.h" />
