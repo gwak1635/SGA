@@ -20,6 +20,8 @@
 using namespace std;
 
 //DirectX
+#include "DirectXTex/DirectXTex.h"
+#pragma comment(lib, "DirectXTex/DirectXTex.lib")
 #include <d3dcompiler.h>
 #include <d3d11.h>
 #include <D3DX10math.h>
@@ -52,6 +54,8 @@ using namespace std;
 
 #include "Utilities/Gui.h"
 
+#include "Utilities/Animator.h"
+
 typedef D3DXVECTOR3 Vector3;
 typedef D3DXVECTOR2 Vector2;
 typedef D3DXMATRIX  Matrix;
@@ -70,6 +74,7 @@ typedef UINT		uint;
 #include "Renders/Resources/VertexType.h"
 #include "Renders/Resources/ShaderBuffer.h"
 #include "Renders/Resources/GlobalBuffer.h"
+#include "Renders/Resources/Texture2D.h"
 
 #include "Renders/IA/VertexBuffer.h"
 #include "Renders/IA/IndexBuffer.h"
@@ -80,6 +85,11 @@ typedef UINT		uint;
 
 #include "Utilities/BoundingBox.h"
 #include "Utilities/Random.h"
+
+//
+#include "Utilities/Path.h"
+#include "Utilities/String.h"
+//
 
 #define WinMaxWidth 1280
 #define WinMaxHeight 720
