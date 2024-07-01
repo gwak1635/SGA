@@ -24,6 +24,9 @@ public:
     void SetSize(Vector3 size) { this->size = size; }
     Vector3 GetSize() { return size; }
 
+    void SetLoading(bool loading) { this->isloading = loading; }
+    int GetLoading() { return isloading; }
+
     void SetSRV(ID3D11ShaderResourceView* srv) { this->srv = srv; }
     void SetShader(wstring shaderPath);
     void SetImage(wstring imagePath);
@@ -70,4 +73,8 @@ protected:
 
 
     D3D11_MAPPED_SUBRESOURCE subRe;
+
+    //로딩여부
+    bool isloading = true;
+
 };
