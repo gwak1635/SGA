@@ -14,13 +14,15 @@ Note::Note(Vector3 position, Vector3 size, float rotation, int p_lane)
         path = TexturePath + L"150p30\\Blue.png";
         break;
     case 1:
-        path = TexturePath + L"150p30\\Red.png";
-        break;
     case 2:
         path = TexturePath + L"150p30\\Red.png";
         break;
     case 3:
         path = TexturePath + L"150p30\\Blue.png";
+        break;
+    case 4:
+    case 5:
+        path = TexturePath + L"150p30\\Twin.png";
         break;
     default:
         break;

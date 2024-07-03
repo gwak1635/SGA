@@ -3,10 +3,37 @@
 
 //게이지를 만들어야 한다
 //파일 입출력을 통해 채보 데이터 파일을 만들어 보자!
+int RhythmGame::LanetoJlane(int lane) {
+    if (lane == 0 || lane == 1 || lane == 4) {
+        return 0;
+    }
+    else {
+        return 1;
+    }
+}
+
+
+
+void RhythmGame::InitNote(vector<int> lane, vector<float> time)
+{
+    for (int i = 0; i < lane.size(); i++)
+    {
+        float x;
+        if (LanetoJlane(lane[i])==1) {
+            x = WinMaxWidth * 0.5f + 75 + lanethick / 2;
+        }
+        else {
+            x = WinMaxWidth * 0.5f - 75 - lanethick / 2;
+        }
+         
+        note.push_back(new Note({ x, 720 + onesec*time[i], 0},
+            { 150.0f,30.0f,1 }, 0, lane[i])
+        );
+    }
+}
 
 void RhythmGame::Init()
 {
-    int lanethick = 15;    
     {
         //라인 3개(레인 2개) 만들기
         lane.push_back(new Rect(
@@ -51,41 +78,53 @@ void RhythmGame::Init()
         }
     }
     
-    note.push_back(new Note({ WinMaxWidth * 0.5f - 75 - lanethick / 2, 720, 0 },
-        { 150.0f,30.0f,1 }, 0, 1)
-    );
-    note.push_back(new Note({ WinMaxWidth * 0.5f + 75 + lanethick / 2, 720+onesec*0.5f, 0 },
-        { 150.0f,30.0f,1 }, 0, 2)
-    );
-    note.push_back(new Note({WinMaxWidth * 0.5f - 75 - lanethick / 2, 720 + onesec, 0},
-        { 150.0f,30.0f,1 }, 0, 0)
-    );
-    note.push_back(new Note({ WinMaxWidth * 0.5f + 75 + lanethick / 2, 720 + onesec * 1.5f, 0 },
-        { 150.0f,30.0f,1 }, 0, 3)
-    );
+    InitNote(notelane,time);
     for (Note* r : note)
     {
         r->UpdateWorld();
     }
 
     {
-        judge.push_back(new TextureRect(
-            Vector3(WinMaxWidth * 0.5f, 500, 0),
+        judge0.push_back(new TextureRect(
+            Vector3(WinMaxWidth * 0.5f - 75 - lanethick * 0.5f, 150, 0),
             Vector3(150, 50, 1), 0.0f, TexturePath + L"150p50\\hexed.png")
         );
-        judge.push_back(new TextureRect(
-            Vector3(WinMaxWidth * 0.5f, 500, 0),
+        judge0.push_back(new TextureRect(
+            Vector3(WinMaxWidth * 0.5f - 75 - lanethick * 0.5f, 150, 0),
             Vector3(150, 50, 1), 0.0f, TexturePath + L"150p50\\react.png")
         );
-        judge.push_back(new TextureRect(
-            Vector3(WinMaxWidth * 0.5f, 500, 0),
+        judge0.push_back(new TextureRect(
+            Vector3(WinMaxWidth * 0.5f - 75 - lanethick * 0.5f, 150, 0),
             Vector3(150, 50, 1), 0.0f, TexturePath + L"150p50\\stray.png")
         );
-        judge.push_back(new TextureRect(
-            Vector3(WinMaxWidth * 0.5f, 500, 0),
+        judge0.push_back(new TextureRect(
+            Vector3(WinMaxWidth * 0.5f - 75 - lanethick * 0.5f, 150, 0),
             Vector3(150, 50, 1), 0.0f, TexturePath + L"150p50\\miss.png")
         );
-        for (TextureRect* r : judge)
+        for (TextureRect* r : judge0)
+        {
+            r->UpdateWorld();
+            r->SetLoading(false);
+        }
+    }
+    {
+        judge1.push_back(new TextureRect(
+            Vector3(WinMaxWidth * 0.5f + 75 + lanethick * 0.5f, 150, 0),
+            Vector3(150, 50, 1), 0.0f, TexturePath + L"150p50\\hexed.png")
+        );
+        judge1.push_back(new TextureRect(
+            Vector3(WinMaxWidth * 0.5f + 75 + lanethick * 0.5f, 150, 0),
+            Vector3(150, 50, 1), 0.0f, TexturePath + L"150p50\\react.png")
+        );
+        judge1.push_back(new TextureRect(
+            Vector3(WinMaxWidth * 0.5f + 75 + lanethick * 0.5f, 150, 0),
+            Vector3(150, 50, 1), 0.0f, TexturePath + L"150p50\\stray.png")
+        );
+        judge1.push_back(new TextureRect(
+            Vector3(WinMaxWidth * 0.5f + 75 + lanethick * 0.5f, 150, 0),
+            Vector3(150, 50, 1), 0.0f, TexturePath + L"150p50\\miss.png")
+        );
+        for (TextureRect* r : judge1)
         {
             r->UpdateWorld();
             r->SetLoading(false);
@@ -95,7 +134,11 @@ void RhythmGame::Init()
 
 void RhythmGame::Destroy()
 {
-    for (TextureRect* r : judge)
+    for (TextureRect* r : judge1)
+    {
+        SAFE_DELETE(r);
+    }
+    for (TextureRect* r : judge0)
     {
         SAFE_DELETE(r);
     }
@@ -115,16 +158,32 @@ void RhythmGame::Destroy()
     
 }
 
-void RhythmGame::SeeJudge(int j_judge) {
-    for (TextureRect* r : judge)
-    {
-        r->SetLoading(false);
+void RhythmGame::SeeJudge(int j_judge, int lane) {
+    switch (lane) {
+    case 0:
+        for (TextureRect* r : judge0)
+        {
+            r->SetLoading(false);
+        }
+        judge0[j_judge]->SetLoading(true);
+        break;
+    case 1:
+        for (TextureRect* r : judge1)
+        {
+            r->SetLoading(false);
+        }
+        judge1[j_judge]->SetLoading(true);
+        break;
     }
-    judge[j_judge]->SetLoading(true);
+    
 }
+
+
 
 void RhythmGame::NoteJudge(int j_lane)
 {
+    int judgelane = LanetoJlane(j_lane);
+
     Note* Anote = nullptr;
     for (Note* r : note) {
         if (r->GetLoading()) {
@@ -138,23 +197,21 @@ void RhythmGame::NoteJudge(int j_lane)
     if (Anote == nullptr) {}
     else if (100 - (onesec * 0.040) <= Anote->GetPosition().y && Anote->GetPosition().y <= 100 + (onesec * 0.040))
     {
-        cout << "Hexed" << endl;
+        
+        SeeJudge(0, judgelane);
         Anote->SetLoading(false);
-        SeeJudge(0);
-
     }
     else if (100 - (onesec * 0.080) <= Anote->GetPosition().y && Anote->GetPosition().y <= 100 + (onesec * 0.080))
     {
         //react 판정
-        cout << "React" << endl;
-        SeeJudge(1);
+        SeeJudge(1, judgelane);
+        Anote->SetLoading(false);
     }
     else {
         //배드 판정
-        cout << "Stray" << endl;
-        SeeJudge(2);
+        SeeJudge(2, judgelane);
+        Anote->SetLoading(false);
     }
-
 }
 
 void RhythmGame::Update()
@@ -172,15 +229,30 @@ void RhythmGame::Update()
     if (Keyboard::Get()->Down('K')) {
         NoteJudge(3);
     }
+    if (Keyboard::Get()->Down('D')&&Keyboard::Get()->Press('F')
+        || Keyboard::Get()->Down('F') && Keyboard::Get()->Press('D'))
+    {
+        NoteJudge(4);
+    }
+    if (Keyboard::Get()->Down('J') && Keyboard::Get()->Press('K')
+        || Keyboard::Get()->Down('K') && Keyboard::Get()->Press('J'))
+    {
+        NoteJudge(5);
+    }
     
 
-    for (TextureRect* r : judge)
+    for (TextureRect* r : judge0)
     {
         if (r->GetLoading()) {
             r->Update();
         }  
     }
-
+    for (TextureRect* r : judge1)
+    {
+        if (r->GetLoading()) {
+            r->Update();
+        }
+    }
 
     for (Note* r : note)
     {
@@ -188,10 +260,12 @@ void RhythmGame::Update()
             r->NoteFall(baesok);
                         
             //스캔해서 '판정 범위' 맨 밑에 있는 노트를 찾아 냄
-            if (r->GetPosition().y < 100 - (155 * baesok * 0.120))
+            if (r->GetPosition().y < 100 - (onesec * 0.120))
             {
+                int judgelane = LanetoJlane(r->GetLane());
+
                 r->SetLoading(false);
-                SeeJudge(3);
+                SeeJudge(3, judgelane);
             }
 
             r->Update();
@@ -265,7 +339,13 @@ void RhythmGame::Render()
             r->Render();
         }
     }
-    for (TextureRect* r : judge)
+    for (TextureRect* r : judge0)
+    {
+        if (r->GetLoading()) {
+            r->Render();
+        }
+    }
+    for (TextureRect* r : judge1)
     {
         if (r->GetLoading()) {
             r->Render();
