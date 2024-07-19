@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "P00_RhythmGame.h"
 
+
 //게이지를 만들어야 한다
 //파일 입출력을 통해 채보 데이터 파일을 만들어 보자!
 int RhythmGame::LanetoJlane(int lane) {
@@ -229,6 +230,8 @@ void RhythmGame::Update()
     if (Keyboard::Get()->Down('K')) {
         NoteJudge(3);
     }
+
+    //둘 중 하나의 키를 누르고 '특정 시간 이내'에 입력이 되었을 때로 하기
     if (Keyboard::Get()->Down('D')&&Keyboard::Get()->Press('F')
         || Keyboard::Get()->Down('F') && Keyboard::Get()->Press('D'))
     {
