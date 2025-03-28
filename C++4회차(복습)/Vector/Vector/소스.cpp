@@ -26,27 +26,43 @@ struct Car {
 int main() {
 	Car::engine a;
 	a.test = 100;
-	//벡터: 자료를 담는 자료구조
+	//벡터: 자료를 담는 자료구조 (배열형)
 	//vector<담을 자료형> 변수이름;으로 선언을 한다.
-	vector<int> vecInt;
+	vector<int> vecInt = { 1,2,3,4 };
 
-	vecInt.push_back(3);
-	vecInt.push_back(2);
-	vecInt.push_back(7);
-	vecInt.push_back(6);
+	vecInt.push_back(5);
+	vecInt.pop_back();
+	//1 2 5 5 5 3 4
 
-	vecInt.insert(vecInt.end()-2, 5);
-	
-	//cout << vecInt[-1] << endl;
-	//파이썬 리스트처럼은 안된다!
-	// 
-	// 벡터 이터레이터: 벡터의 주소값을 임시로 담을 변수
-	vector<int>::iterator iter;//이중 클래스 같은 건가?
+	vecInt.insert(vecInt.begin() + 2, 3 ,5);
+	vecInt.erase(vecInt.begin() + 2);
 
-	for (iter = vecInt.begin(); iter!=vecInt.end(); iter++)
-	{
-		cout << (*iter) << endl;
+	for (int i = 0; i < vecInt.size(); i++) {
+		cout << vecInt[i] << endl;
 	}
+
+	
+
+
+
+
+	//vecInt.push_back(3);
+	//vecInt.push_back(2);
+	//vecInt.push_back(7);
+	//vecInt.push_back(6);
+
+	//vecInt.insert(vecInt.end()-2, 5);
+	//
+	////cout << vecInt[-1] << endl;
+	////파이썬 리스트처럼은 안된다!
+	//// 
+	//// 벡터 이터레이터: 벡터의 주소값을 임시로 담을 변수
+	//vector<int>::iterator iter;//이중 클래스 같은 건가?
+
+	//for (iter = vecInt.begin(); iter!=vecInt.end(); iter++)
+	//{
+	//	cout << (*iter) << endl;
+	//}
 
 	return 0;
 }
